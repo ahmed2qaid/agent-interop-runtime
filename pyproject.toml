@@ -4,15 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agent-interop-runtime"
-version = "0.3.0"
-description = "Framework-neutral AI agent contracts, adapters, sessions, cross-runtime handoffs, and MCP tool providers"
+version = "0.4.0"
+description = "Framework-neutral AI agent runtime with adapters, cross-runtime handoffs, portable checkpoints, tools, budgets, and persistence"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 
 [project.optional-dependencies]
 openai = ["openai-agents>=0.22,<1"]
 langgraph = ["langgraph>=1,<2"]
-all = ["openai-agents>=0.22,<1", "langgraph>=1,<2"]
+postgres = ["psycopg[binary]>=3.2,<4"]
+all = ["openai-agents>=0.22,<1", "langgraph>=1,<2", "psycopg[binary]>=3.2,<4"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
