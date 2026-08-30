@@ -8,15 +8,17 @@
 - [x] deterministic mock adapter
 - [x] conformance tests and CI
 
-Exit criteria: an application can define one agent contract and execute it through a registered adapter without importing that adapter in domain code.
-
 ## v0.2 — Real adapters
 
-- OpenAI Agents SDK adapter
-- LangGraph adapter
-- adapter capability discovery
-- streaming event contract
-- structured tool call events
+- [x] OpenAI Agents SDK adapter
+- [x] LangGraph compiled-graph adapter
+- [x] adapter capability discovery
+- [x] normalized streaming event contract
+- [x] structured tool-call extraction
+- [x] optional framework dependencies
+- [x] adapter mapping tests
+
+Exit criteria: the same `AgentSpec` can execute through two distinct real framework adapters while application/domain code depends only on the neutral contract.
 
 ## v0.3 — Multi-agent interoperability
 

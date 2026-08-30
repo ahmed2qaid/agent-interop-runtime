@@ -1,61 +1,81 @@
 # Agent Interop Runtime
 
-A framework-neutral runtime contract for AI agents.
-
-Define an agent once, then execute it through pluggable runtime adapters instead of coupling application code to one agent framework.
-
-## Core idea
+Define an agent once, then execute it through different agent frameworks using explicit adapters instead of coupling application code to one vendor/runtime.
 
 ```text
-AgentSpec
-   ↓
-Interop Runtime
-   ↓
-Adapter Registry
-   ├── OpenAI Agents
-   ├── LangGraph
-   ├── CrewAI
-   ├── Microsoft Agent Framework
-   └── Google ADK
+                AgentSpec
+                   │
+        ┌──────────┼──────────┐
+        ↓          ↓          ↓
+ OpenAI Agents  LangGraph   future adapters
+        │          │
+        └────── RunResult / RuntimeEvent ──────┘
 ```
 
-v0.1 ships the framework-neutral contract, adapter registry, policy checks, and a deterministic reference adapter used by tests and examples.
+## v0.2
 
-## Quick start
+- framework-neutral `AgentSpec`, `RunRequest`, `RunResult`
+- runtime policy validation
+- adapter registry
+- adapter capability discovery
+- normalized `RuntimeEvent` contract
+- real OpenAI Agents SDK adapter
+- real LangGraph compiled-graph adapter
+- structured tool-call extraction
+- OpenAI streamed-event adapter
+- LangGraph update streaming
+- optional framework dependencies; core remains dependency-free
+- deterministic conformance tests
+
+## Define once
 
 ```python
-from agent_interop_runtime import AgentSpec, InteropRuntime, MockAdapter
-
-runtime = InteropRuntime()
-runtime.register(MockAdapter())
+from agent_interop_runtime import AgentSpec, RuntimePolicy
 
 spec = AgentSpec(
-    name="research-agent",
-    instructions="Research the request and return a concise answer.",
-    model="mock-model",
+    name="researcher",
+    instructions="Research the question and cite evidence.",
+    model="gpt-5",
     tools=("search",),
+    policy=RuntimePolicy(max_steps=10, allowed_tools=("search",)),
 )
-
-result = runtime.run("mock", spec, "What changed?")
-print(result.output)
 ```
 
-## Design principles
+## OpenAI Agents SDK
 
-- framework-neutral public contract
-- explicit capabilities instead of hidden magic
-- deterministic adapter conformance tests
-- policy limits for steps, tools, and cost metadata
-- adapters remain isolated from application code
-- MCP and A2A are protocol integrations, not hard-coded runtime assumptions
+```bash
+pip install -e '.[openai]'
+```
 
-## Roadmap
+```python
+adapter = OpenAIAgentsAdapter(tools={"search": search_tool})
+runtime.register(adapter)
+result = runtime.run("openai-agents", spec, "Compare two approaches")
+```
+
+The adapter constructs an SDK `Agent`, passes the neutral `max_steps` policy as `max_turns`, and converts SDK output/tool-call metadata back into `RunResult`.
+
+## LangGraph
+
+```bash
+pip install -e '.[langgraph]'
+```
+
+A LangGraph application supplies a graph factory because graph state schemas are application-specific:
+
+```python
+adapter = LangGraphAdapter(lambda spec: compiled_graph)
+runtime.register(adapter)
+result = runtime.run("langgraph", spec, "Compare two approaches")
+```
+
+`input_builder` and `output_parser` are replaceable when your graph uses a custom state schema.
+
+## Why not fork a framework?
+
+Interoperability is only useful if the core remains neutral. OpenAI Agents and LangGraph are optional edges around the same contract; later adapters can target CrewAI, Microsoft Agent Framework, Google ADK, MCP, or A2A without rewriting domain code.
 
 See [ROADMAP.md](ROADMAP.md).
-
-## Status
-
-v0.1 foundation.
 
 ## License
 
