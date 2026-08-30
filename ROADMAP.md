@@ -16,17 +16,18 @@
 - [x] normalized streaming event contract
 - [x] structured tool-call extraction
 - [x] optional framework dependencies
-- [x] adapter mapping tests
-
-Exit criteria: the same `AgentSpec` can execute through two distinct real framework adapters while application/domain code depends only on the neutral contract.
 
 ## v0.3 — Multi-agent interoperability
 
-- handoff contract
-- shared conversation/session state
-- framework-crossing handoffs
-- MCP tool provider adapter
-- A2A interoperability experiments
+- [x] runtime-neutral handoff contract
+- [x] shared conversation/session state
+- [x] agent route registry
+- [x] framework-crossing handoffs (for example OpenAI → LangGraph)
+- [x] portable handoff envelope for protocol experiments
+- [x] runtime-neutral MCP tool discovery/call provider
+- [x] tests proving session history survives runtime boundaries
+
+Exit criteria: two agents backed by different runtime adapters can share one session and hand off work through a portable contract without importing either framework into application/domain code.
 
 ## v0.4 — Persistence and portability
 
