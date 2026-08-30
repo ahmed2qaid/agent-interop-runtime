@@ -31,11 +31,14 @@ Exit criteria: two agents backed by different runtime adapters can share one ses
 
 ## v0.4 — Persistence and portability
 
-- Postgres session store
-- portable checkpoints
-- runtime-neutral tool registry
-- model-provider abstraction
-- policy and budget enforcement
+- [x] PostgreSQL session store with lazy `psycopg` integration
+- [x] portable runtime-neutral checkpoint format
+- [x] runtime-neutral tool registry and callable tool contract
+- [x] model-provider request/response abstraction and provider registry
+- [x] session-level cost, token, and step budget enforcement
+- [x] serialization tests proving session/checkpoint portability
+
+Exit criteria: session state, tools, model providers, and execution budgets can survive framework boundaries without making domain code depend on OpenAI Agents, LangGraph, or a specific model vendor.
 
 ## v1.0
 
